@@ -1,16 +1,11 @@
-#include <iostream>
-#include <memory>
+#include "base_inc.h"
+#include "thread_pool.h"
 
-void smartPointersExample()
-{
-    // 使用共享型智能指针
-    std::shared_ptr<int> sptr1 = std::make_shared<int>(2);
-    std::cout << *sptr1 << std::endl;
-}
+std::mutex thread_safe_cout::m_mutex;
 
 int main()
 {
     std::cout << "Hello World." << std::endl;
-    smartPointersExample();
+    test_thread_pool();
     return 0;
 }

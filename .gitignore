@@ -61,3 +61,7 @@ build/CMakeFiles/TheSky.dir/link.txt
 build/CMakeFiles/TheSky.dir/linkLibs.rsp
 build/CMakeFiles/TheSky.dir/objects1.rsp
 build/CMakeFiles/TheSky.dir/progress.make
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+build/CMakeFiles/TheSky.dir/includes_CXX.rsp
+build/bin/build_output.html
