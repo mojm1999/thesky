@@ -8,6 +8,15 @@
 #include <random>
 #include <chrono>
 
+/**
+ * 获取一个随机数值
+ * 
+ * @param:
+ *  [start,end]闭区间随机
+ * 
+ * @return:
+ *  区间内的一个随机数值
+*/
 uint32_t get_random_number(uint32_t start, uint32_t end)
 {
     if (end < start)
@@ -20,6 +29,9 @@ uint32_t get_random_number(uint32_t start, uint32_t end)
     return dis(gen);
 }
 
+/**
+ * 获取当前UNIX时间戳
+*/
 uint64_t get_unixtime()
 {
     auto now = std::chrono::system_clock::now();
@@ -27,6 +39,9 @@ uint64_t get_unixtime()
     return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
 }
 
+/**
+ * 多线程安全的输出类
+*/
 class thread_safe_cout
 {
 private:
@@ -46,6 +61,7 @@ public:
         return *this;
     }
 
+    // 处理特殊情况std::endl
     thread_safe_cout& operator<< (std::ostream& (*pf)(std::ostream&))
     {
         std::cout << pf;
