@@ -8,6 +8,9 @@
 #include <random>
 #include <chrono>
 
+// 定义任务类型
+using TASK = std::function<void()>;
+
 /**
  * 获取一个随机数值
  * 
@@ -30,13 +33,35 @@ uint32_t get_random_number(uint32_t start, uint32_t end)
 }
 
 /**
- * 获取当前UNIX时间戳
+ * 获取当前UNIX时间戳，单位秒
 */
 uint64_t get_unixtime()
 {
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
     return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+}
+
+/**
+ * 获取系统当前已运行时长，单位毫秒
+*/
+uint64_t get_systemruntime()
+{
+    auto now = std::chrono::steady_clock::now();
+    auto duration = now.time_since_epoch();
+    uint64_t milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    return milliseconds;
+}
+
+/**
+ * 当前线程睡眠X毫秒
+ * 
+ * @param:
+ *  milliseconds设定时间，单位毫秒
+*/
+void thread_sleep(uint64_t milliseconds) {
+    std::chrono::milliseconds duration(milliseconds);
+    std::this_thread::sleep_for(duration);
 }
 
 /**

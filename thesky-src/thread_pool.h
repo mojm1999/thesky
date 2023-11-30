@@ -4,8 +4,6 @@
 class thread_pool
 {
 private:
-    // 定义任务类型
-    using TASK = std::function<void()>;
     // 工作线程数组
     std::vector<std::thread> m_vec_workers;
     // 任务队列（待执行）
@@ -95,8 +93,10 @@ auto thread_pool::enqueue(F&& f, Args&&... args)
     );
     {
         std::unique_lock<std::mutex> lock(m_qe_mutex);
-        if (m_stop)
-            throw std::runtime_error("添加任务时线程池已暂停工作");
+        if (m_stop) {
+            thread_safe_cout() << "添加任务时线程池已暂停工作" << std::endl;
+            return std::future<RETTYPE>();
+        }
         // 将任务加入执行队列
         m_qe_tasks.emplace([ptr_task](){ (*ptr_task)(); });
     }
@@ -106,16 +106,15 @@ auto thread_pool::enqueue(F&& f, Args&&... args)
     return fut;
 }
 
-void test_output_something(uint32_t rand)
-{
-    auto thread_id = std::this_thread::get_id();
-    thread_safe_cout() << "工作线程id：" << thread_id <<
-        "，随机输出一个数字：" << rand << std::endl;
-}
-
 void test_thread_pool()
 {
     auto ptr_pool = new thread_pool(8);
+
+    auto test_output_something = [](uint32_t rand) {
+        auto thread_id = std::this_thread::get_id();
+        thread_safe_cout() << "工作线程id：" << thread_id <<
+            "，随机输出一个数字：" << rand << std::endl;
+    };
     uint32_t count = 10, cur_time = 0;
     while(count != 0) {
         cur_time = get_unixtime();
