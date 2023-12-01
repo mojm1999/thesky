@@ -13,7 +13,8 @@ std::mutex thread_safe_cout::m_mutex;
 int main()
 {
     thread_safe_cout() << "Hello World." << std::endl;
-test_thesky_timer();
+    test_thesky_timer();
     thread_safe_cout() << "Bye World." << std::endl;
+    for (;;) {}
     return 0;
 }

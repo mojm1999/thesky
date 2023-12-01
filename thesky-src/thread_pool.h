@@ -14,9 +14,11 @@ private:
     std::condition_variable m_condition;
     // 线程池是否停止运行
     bool m_stop { false };
+    // 线程数量
+    static uint32_t thread_count;
 
 public:
-    thread_pool(uint32_t expect_threads);
+    thread_pool(uint32_t expect = thread_count);
     ~thread_pool();
 
     /**
@@ -35,6 +37,11 @@ public:
     auto enqueue(F&& f, Args&&... args)
         -> std::future<decltype(f(args...))>;
 };
+
+uint32_t thread_pool::thread_count = std::thread::hardware_concurrency();
+
+// 全局线程池
+static thread_pool* global_thread_pool = new thread_pool();
 
 thread_pool::thread_pool(uint32_t expect_threads)
 {
@@ -65,6 +72,8 @@ thread_pool::thread_pool(uint32_t expect_threads)
             }
         );
     }
+    // 打印线程数
+    thread_safe_cout() << "启动线程数：" << expect_threads << std::endl;
 }
 
 thread_pool::~thread_pool()
@@ -108,8 +117,6 @@ auto thread_pool::enqueue(F&& f, Args&&... args)
 
 void test_thread_pool()
 {
-    auto ptr_pool = new thread_pool(8);
-
     auto test_output_something = [](uint32_t rand) {
         auto thread_id = std::this_thread::get_id();
         thread_safe_cout() << "工作线程id：" << thread_id <<
@@ -119,10 +126,9 @@ void test_thread_pool()
     while(count != 0) {
         cur_time = get_unixtime();
         uint32_t args = get_random_number(0, 100);
-        ptr_pool->enqueue(test_output_something, args);
+        global_thread_pool->enqueue(test_output_something, args);
         thread_safe_cout() << "主线程   时间：" << cur_time <<
             " 加入一个任务：" << args << std::endl;
         --count;
     }
-    delete ptr_pool;
 }

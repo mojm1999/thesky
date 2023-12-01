@@ -1,5 +1,6 @@
 #pragma once
 #include "base_inc.h"
+#include "thread_pool.h"
 
 // 工作转盘占位
 constexpr uint32_t TIME_NEAR_SHIFT = 8;
@@ -99,6 +100,7 @@ private:
     void emplace_task(task_node& task);
 };
 
+// 全局定时器
 static timer* global_timer = new timer();
 
 timer::timer()
@@ -179,7 +181,7 @@ void timer::timer_execute()
     while (!qe_tasks.empty())
     {
         task_node& task = qe_tasks.front();
-        task.function();
+        global_thread_pool->enqueue(task.function);
         qe_tasks.pop();
     }
 }
@@ -245,37 +247,36 @@ void timer::emplace_task(task_node& task)
     }
 }
 
-#include "thread_pool.h"
 void test_thesky_timer()
 {
-    thread_pool* ptr_pool = new thread_pool(8);
     // 绑定类的成员函数
     auto timer_thread = std::bind(&timer::thesky_thread, global_timer);
-    ptr_pool->enqueue(timer_thread);
+    global_thread_pool->enqueue(timer_thread);
 
     auto one_task = []() {
         auto thread_id = std::this_thread::get_id();
-        thread_safe_cout() << "定时器线程id：" << thread_id <<
+        thread_safe_cout() << "工作线程id：" << thread_id <<
             " 时间：" << get_unixtime() << " 执行任务 one_task" << std::endl;
+        thread_sleep(2000);
+        thread_safe_cout() << "工作线程id：" << thread_id <<
+        " 时间：" << get_unixtime() << " 执行任务 one_task时睡眠2000ms" << std::endl;
     };
     auto two_task = [](uint32_t a, uint32_t b) -> uint32_t {
         auto thread_id = std::this_thread::get_id();
-        thread_safe_cout() << "定时器线程id：" << thread_id <<
+        thread_safe_cout() << "工作线程id：" << thread_id <<
             " 时间：" << get_unixtime() << " 执行任务 two_task " << a + b << std::endl;
         return a + b;
     };
 
     thread_safe_cout() << "主线程   时间：" << get_unixtime() <<
-        " 加入一个任务：" << " 3000毫秒后执行" << std::endl;
+        " 加入一个任务：" << " 3000ms后执行" << std::endl;
     global_timer->thesky_timeout(3000, one_task);
 
     thread_sleep(2000);
 
     thread_safe_cout() << "主线程   时间：" << get_unixtime() <<
-        " 再加入一个任务：" << " 2000毫秒后执行" << std::endl;
+        " 再加入一个任务：" << " 2000ms后执行" << std::endl;
     auto fut = global_timer->thesky_timeout(2000, two_task, 9, 1);
     auto result = fut.get();
     thread_safe_cout() << "主线程   任务异步获取结果：" << result << std::endl;
-
-    delete ptr_pool;
 }
