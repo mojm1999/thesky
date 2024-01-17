@@ -21,7 +21,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # 定义头文件目录列表
 set(PROJECT_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/thesky-src
+    # ${CMAKE_SOURCE_DIR}/thesky-src
+    # ${CMAKE_SOURCE_DIR}/thesky-net
     # 添加更多目录
 )
 

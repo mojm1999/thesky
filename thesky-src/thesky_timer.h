@@ -270,13 +270,13 @@ void test_thesky_timer()
 
     thread_safe_cout() << "主线程   时间：" << get_unixtime() <<
         " 加入一个任务：" << " 3000ms后执行" << std::endl;
-    global_timer->thesky_timeout(3000, one_task);
+    timer::thesky_timeout(3000, one_task);
 
     thread_sleep(2000);
 
     thread_safe_cout() << "主线程   时间：" << get_unixtime() <<
         " 再加入一个任务：" << " 2000ms后执行" << std::endl;
-    auto fut = global_timer->thesky_timeout(2000, two_task, 9, 1);
+    auto fut = timer::thesky_timeout(2000, two_task, 9, 1);
     auto result = fut.get();
     thread_safe_cout() << "主线程   任务异步获取结果：" << result << std::endl;
 }

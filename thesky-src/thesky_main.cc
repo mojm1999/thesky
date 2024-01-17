@@ -10,11 +10,13 @@ std::mutex thread_safe_cout::m_mutex;
 // 2、测试时间轮定时器
 // test_thesky_timer();
 
-int main()
+// 3、测试网络库
+
+int32_t main()
 {
     thread_safe_cout() << "Hello World." << std::endl;
-    test_thesky_timer();
-    thread_safe_cout() << "Bye World." << std::endl;
+
+    // 陷入循环不终止程序
     for (;;) {}
     return 0;
 }

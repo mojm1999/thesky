@@ -7,6 +7,7 @@
 #include <functional>
 #include <random>
 #include <chrono>
+#include <algorithm>
 
 // 定义任务类型
 using TASK = std::function<void()>;
@@ -28,7 +29,7 @@ uint32_t get_random_number(uint32_t start, uint32_t end)
     // 使用静态的 Mersenne Twister 引擎
     static std::mt19937 gen{std::random_device{}()};
     // 定义分布
-    std::uniform_int_distribution<int> dis(start, end);
+    std::uniform_int_distribution<int32_t> dis(start, end);
     return dis(gen);
 }
 
