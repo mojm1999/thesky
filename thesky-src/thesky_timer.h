@@ -30,7 +30,8 @@ constexpr uint32_t UNIT_MILLISECOND = 10;
 constexpr uint32_t UPDATE_INTERVAL = 2;
 
 // 设计定时器
-class timer {
+class timer
+{
 private:
     // 时间任务基本数据
     struct task_node {
@@ -178,8 +179,7 @@ void timer::timer_execute()
     uint32_t idx = m_tick & TIME_NEAR_MASK;
     QUEUE& qe_tasks = m_near[idx];
     // 遍历当前刻度的任务队列
-    while (!qe_tasks.empty())
-    {
+    while (!qe_tasks.empty()) {
         task_node& task = qe_tasks.front();
         global_thread_pool->enqueue(task.function);
         qe_tasks.pop();
@@ -215,8 +215,7 @@ void timer::down_queue(uint32_t level, uint32_t index)
 {
     QUEUE& qe_tasks = m_table[level][index];
     // 遍历当前刻度的任务队列
-    while (!qe_tasks.empty())
-    {
+    while (!qe_tasks.empty()) {
         task_node& task = qe_tasks.front();
         emplace_task(task);
         qe_tasks.pop();
