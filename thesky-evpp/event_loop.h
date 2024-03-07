@@ -1,4 +1,14 @@
-﻿#include "buffer.h"
+﻿/**
+ * 实现了一个基于事件驱动的异步任务执行框架，利用 libevent 库来进行管理
+ * 功能包含对事件的监控、通知和事件循环的执行
+ * 
+ * 将事件处理和事件通知逻辑解耦，
+ * 可以跨线程通知事件的发生，在适当的时候执行相应的回调
+ * 实现了高效的异步响应模式
+*/
+
+#pragma once
+#include "buffer.h"
 
 class EventWatcher
 {
@@ -119,9 +129,6 @@ public:
     }
 }
 
-/**
- * 用于处理客户端请求和其他I/O事件，而不阻塞主线程
-*/
 class EventLoop
 {
 public:

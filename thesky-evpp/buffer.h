@@ -28,7 +28,7 @@
 #include <event2/event.h>
 #include "base_inc.h"
 
-class buffer
+class Buffer
 {
 private:
     // 数据指针
